@@ -16,6 +16,11 @@ XDEBUG_MODE=off php run.php /path/to/phpstan.phar 40000
 Each run uses a fresh temporary directory and `--debug -vvv`, at level 6.
 The two generated files return identical runtime values, but the JSON control does not require PHPStan to infer every literal entry. It is a lower-cost control, not equivalent static-analysis work.
 
+The [CI workflow](https://github.com/alfredbez/phpstan-literal-array-memory-reproducer/actions/workflows/reproduce.yml)
+runs the pinned version, records both measurements, and verifies that both fixtures
+return the same 20,000 entries. Analysis errors fail the workflow. There is no
+timing threshold: a green run verifies the setup, not a performance improvement.
+
 ## Measurements
 
 macOS arm64, PHP 8.5.10, Xdebug disabled, 20,000 entries. Medians of three runs; all analyses exit 0.

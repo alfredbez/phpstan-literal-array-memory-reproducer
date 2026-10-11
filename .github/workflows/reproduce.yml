@@ -1,0 +1,27 @@
+name: Measure literal array memory
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist
+      - name: Measure both variants with empty caches
+        run: php run.php
+      - name: Verify identical runtime values
+        run: |
+          php <<'PHP'
+          <?php
+          $literal = require 'generated/literal.php';
+          $json = require 'generated/json.php';
+          if (count($literal) !== 20000 || $literal !== $json) {
+              exit(1);
+          }
+          PHP

@@ -26,7 +26,7 @@ foreach (['literal', 'json'] as $variant) {
     fclose($pipes[1]);
     fclose($pipes[2]);
     $exit = proc_close($process);
-    if (!preg_match('/--- consumed ([^,]+), total [^,]+, took ([0-9.]+ s)/', $output, $matches)) {
+    if ($exit !== 0 || !preg_match('/--- consumed ([^,]+), total [^,]+, took ([0-9.]+ s)/', $output, $matches)) {
         fwrite(STDERR, $output);
         throw new RuntimeException("PHPStan failed for $variant (exit $exit)");
     }
